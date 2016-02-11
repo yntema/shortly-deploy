@@ -1,6 +1,9 @@
 var mongoose = require('mongoose');
+var bcrypt = require('bcrypt-nodejs');
+var Promise = require('bluebird');
 
-mongoose.connect('mongodb://localhost:4568');
+
+mongoose.connect('mongodb://localhost/db');
 var Schema = mongoose.Schema;
 
 
@@ -27,13 +30,22 @@ userSchema.methods.comparePassword = function(attemptedPassword, callback) {
   });
 };
 
-userSchema.methods.hashPassword = function() {
+userSchema.pre('save', function(next) {
   var cipher = Promise.promisify(bcrypt.hash);
   return cipher(this.get('password'), null, null).bind(this)
     .then(function(hash) {
+  console.log('pre save .........', this);
       this.set('password', hash);
     });
-};
+});
+
+// userSchema.methods.hashPassword = function() {
+//   var cipher = Promise.promisify(bcrypt.hash);
+//   return cipher(this.get('password'), null, null).bind(this)
+//     .then(function(hash) {
+//       this.set('password', hash);
+//     });
+// };
 
 
 module.exports.url = mongoose.model('Url', urlSchema);
