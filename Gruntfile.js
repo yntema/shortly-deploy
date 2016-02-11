@@ -2,7 +2,15 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+
     concat: {
+      options: {
+        separator: ';',
+      },
+      dist: {
+        src: ['public/client/**/*.js', 'public/lib/**/*.js'],
+        dest: 'dist/<%= pkg.name %>.js',
+      },
     },
 
     mochaTest: {
@@ -21,22 +29,37 @@ module.exports = function(grunt) {
     },
 
     uglify: {
+      options: {
+        // the banner is inserted at the top of the output
+        banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n'
+      },
+      dist: {
+        files: {
+          'dist/<%= pkg.name %>.min.js': ['<%= concat.dist.dest %>']
+        }
+      }
     },
 
     eslint: {
       target: [
         // Add list of files to lint here
+        'gruntfile.js', './**/*.js', '!./node_modules/**/*.js'
       ]
     },
 
     cssmin: {
+      target: {
+        files: {
+          'public/output.css': ['public/*.css']
+        }
+      }
     },
 
     watch: {
       scripts: {
         files: [
           'public/client/**/*.js',
-          'public/lib/**/*.js',
+          'public/lib/**/*.js'
         ],
         tasks: [
           'concat',
@@ -52,7 +75,6 @@ module.exports = function(grunt) {
     shell: {
       prodServer: {
         command: [
-        'git push live master'
         ]
       }
     },
@@ -104,6 +126,10 @@ module.exports = function(grunt) {
     'mochaTest'
   ]);
 
+  grunt.registerTask('mincss', [
+    'cssmin'
+  ]);
+
   grunt.registerTask('build', [
   ]);
 
@@ -117,11 +143,11 @@ module.exports = function(grunt) {
 
   grunt.registerTask('deploy', [
     // add your deploy tasks here
-    'shell'
+    'eslint', 'concat', 'uglify'
   ]);
 
   grunt.registerTask('live', [
-    'gitpush'
+    'gitpush:target'
   ]);
 
 };
