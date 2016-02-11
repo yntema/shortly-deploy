@@ -81,7 +81,7 @@ module.exports = function(grunt) {
     gitpush: {
       target: {
         options: {
-          remote: 'live'
+          remote: 'origin'
         }
       }
     }
@@ -136,6 +136,7 @@ module.exports = function(grunt) {
   grunt.registerTask('upload', function(n) {
     if (grunt.option('prod')) {
       // add your production server task here
+      grunt.task.run([ 'deploy' ]);
     } else {
       grunt.task.run([ 'server-dev' ]);
     }
