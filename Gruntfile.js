@@ -8,8 +8,8 @@ module.exports = function(grunt) {
         separator: ';',
       },
       dist: {
-        src: ['public/client/**/*.js', 'public/lib/**/*.js'],
-        dest: 'dist/<%= pkg.name %>.js',
+        src: ['public/lib/jquery.js','public/lib/underscore.js', 'public/lib/backbone.js', 'public/lib/handlebars.js','public/client/*.js'],
+        dest: 'public/dist/<%= pkg.name %>.js',
       },
     },
 
@@ -35,7 +35,7 @@ module.exports = function(grunt) {
       },
       dist: {
         files: {
-          'dist/<%= pkg.name %>.min.js': ['<%= concat.dist.dest %>']
+          'public/dist/<%= pkg.name %>.min.js': ['<%= concat.dist.dest %>']
         }
       }
     },
