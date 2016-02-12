@@ -44,14 +44,12 @@ userSchema.pre('save', function(next) {
 });
 
 
-// urlSchema.pre('save', function(next) {
-//   return function(model, attrs, options) {
-//       var shasum = crypto.createHash('sha1');
-//       shasum.update(model.get('url'));
-//       model.set('code', shasum.digest('hex').slice(0, 5));
-//       next();
-//     };
-// });
+urlSchema.pre('save', function(next) {
+  var shasum = crypto.createHash('sha1');
+  shasum.update(this.url);
+  this.code = shasum.digest('hex').slice(0, 5);
+  next();
+});
 
 
 var urlTable = mongoose.model('Url', urlSchema);
