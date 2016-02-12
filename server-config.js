@@ -19,8 +19,8 @@ app.configure(function() {
 app.get('/', util.checkUser, handler.renderIndex);
 app.get('/create', util.checkUser, handler.renderIndex);
 
-app.get('/links', util.checkUser, handler.fetchLinks);
-app.post('/links', handler.saveLink);
+// app.get('/links', util.checkUser, handler.fetchLinks);
+// app.post('/links', handler.saveLink);
 
 app.get('/login', handler.loginUserForm);
 app.post('/login', handler.loginUser);

@@ -3,7 +3,10 @@ var bcrypt = require('bcrypt-nodejs');
 var Promise = require('bluebird');
 
 
-mongoose.connect('mongodb://localhost/db');
+mongoose.connect('mongodb://localhost/shortly');
+
+var db = mongoose.connection;
+
 var Schema = mongoose.Schema;
 
 
@@ -32,10 +35,11 @@ userSchema.methods.comparePassword = function(attemptedPassword, callback) {
 
 userSchema.pre('save', function(next) {
   var cipher = Promise.promisify(bcrypt.hash);
-  return cipher(this.get('password'), null, null).bind(this)
+  return cipher(this.password, null, null).bind(this)
     .then(function(hash) {
-  console.log('pre save .........', this);
-      this.set('password', hash);
+      this.password = hash;
+      console.log('hashed pword', hash);
+      next();
     });
 });
 
@@ -48,9 +52,10 @@ userSchema.pre('save', function(next) {
 // };
 
 
-module.exports.url = mongoose.model('Url', urlSchema);
-module.exports.user = mongoose.model('User', userSchema);
-
+var urlTable = mongoose.model('Url', urlSchema);
+var userTable = mongoose.model('User', userSchema);
+module.exports.url = urlTable;
+module.exports.user = userTable;
 
 // var path = require('path');
 // var knex = require('knex')({
